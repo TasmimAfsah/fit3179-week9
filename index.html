@@ -30,8 +30,9 @@
               "format": {"type": "tsv"}
             },
             "key": "id",
-            "fields": ["iso_a3","name"]
-          }
+            "fields": ["iso_a3"]
+          },
+          "as": ["iso_a3"]
         },
         {
           "lookup": "iso_a3",
@@ -42,7 +43,8 @@
             },
             "key": "Code",
             "fields": ["Entity","AvgTemp"]
-          }
+          },
+          "as": ["Entity","AvgTemp"]
         }
       ],
       "mark": {"type": "geoshape", "stroke": "white"},
