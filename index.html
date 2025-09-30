@@ -17,36 +17,47 @@
       "width": 900,
       "height": 500,
       "projection": {"type": "equalEarth"},
-      "data": {
-        "url": "https://raw.githubusercontent.com/vega/vega-datasets/master/data/world-110m.json",
-        "format": {"type": "topojson", "feature": "countries"}
-      },
-      "transform": [
+      "layer": [
         {
-          "lookup": "id", 
-          "from": {
-            "data": {
-              "url": "https://raw.githubusercontent.com/TasmimAfsah/fit3179-week9-hw/main/temps_2020_clean.csv",
-              "format": {"type": "csv"}
+          "data": {
+            "url": "https://raw.githubusercontent.com/vega/vega-datasets/master/data/world-110m-country.json",
+            "format": {"type": "topojson", "feature": "countries"}
+          },
+          "mark": {"type": "geoshape", "fill": "lightgray", "stroke": "white"}
+        },
+        {
+          "data": {
+            "url": "https://raw.githubusercontent.com/TasmimAfsah/fit3179-week9-hw/main/temps_2020_clean.csv",
+            "format": {"type": "csv"}
+          },
+          "transform": [
+            {
+              "lookup": "properties.ISO_A3",
+              "from": {
+                "data": {
+                  "url": "https://raw.githubusercontent.com/TasmimAfsah/fit3179-week9-hw/main/temps_2020_clean.csv",
+                  "format": {"type": "csv"}
+                },
+                "key": "Code",
+                "fields": ["Entity", "AvgTemp"]
+              }
+            }
+          ],
+          "mark": {"type": "geoshape", "stroke": "white"},
+          "encoding": {
+            "color": {
+              "field": "AvgTemp",
+              "type": "quantitative",
+              "scale": {"scheme": "reds"},
+              "title": "Average Temp (°C)"
             },
-            "key": "Code",
-            "fields": ["Entity", "AvgTemp"]
+            "tooltip": [
+              {"field": "Entity", "title": "Country"},
+              {"field": "AvgTemp", "title": "Avg Temp (2020 °C)", "format": ".2f"}
+            ]
           }
         }
-      ],
-      "mark": {"type": "geoshape", "stroke": "white"},
-      "encoding": {
-        "color": {
-          "field": "AvgTemp",
-          "type": "quantitative",
-          "scale": {"scheme": "reds"},
-          "title": "Average Temp (°C)"
-        },
-        "tooltip": [
-          {"field": "Entity", "title": "Country"},
-          {"field": "AvgTemp", "title": "Avg Temp (2020 °C)", "format": ".2f"}
-        ]
-      }
+      ]
     };
 
     vegaEmbed('#vis', spec);
