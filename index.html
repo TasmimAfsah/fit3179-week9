@@ -1,68 +1,68 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>Average Surface Temperature by Country (2020)</title>
+  <meta charset="utf-8" />
   <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 18px; }
+    h2 { text-align: center; margin-bottom: 6px; }
+    #vis { margin: 0 auto; max-width: 1000px; }
+    .credit { text-align:center; font-size: 12px; color: #666; margin-top:6px; }
+  </style>
 </head>
 <body>
   <h2>Average Surface Temperature by Country (2020)</h2>
   <div id="vis"></div>
+  <div class="credit">Data: user-cleaned temps_2020_clean.csv — Map layer: FIT3179 TopoJSON</div>
 
-  <script type="text/javascript">
-    var spec = {
+  <script>
+    const spec = {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
       "width": 900,
-      "height": 500,
-      "projection": {"type": "equalEarth"},
+      "height": 520,
+      "projection": { "type": "equalEarth" },
       "data": {
-        "url": "https://raw.githubusercontent.com/vega/vega-datasets/master/data/world-110m.json",
-        "format": {"type": "topojson", "feature": "countries"}
+        "url": "https://raw.githubusercontent.com/FIT3179/Vega-Lite/main/3_choropleth_map/js/ne_110m_admin_0_countries.topojson",
+        "format": { "type": "topojson", "feature": "ne_110m_admin_0_countries" }
       },
       "transform": [
         {
-          "lookup": "id",
-          "from": {
-            "data": {
-              "url": "https://raw.githubusercontent.com/vega/vega-datasets/master/data/world-110m-country-names.tsv",
-              "format": {"type": "tsv"}
-            },
-            "key": "id",
-            "fields": ["iso_a3"]
-          },
-          "as": ["iso_a3"]
-        },
-        {
-          "lookup": "iso_a3",
+          "lookup": "properties.ISO_A3",
           "from": {
             "data": {
               "url": "https://raw.githubusercontent.com/TasmimAfsah/fit3179-week9-hw/main/temps_2020_clean.csv",
-              "format": {"type": "csv"}
+              "format": { "type": "csv" }
             },
             "key": "Code",
-            "fields": ["Entity","AvgTemp"]
+            "fields": ["Entity", "AvgTemp"]
           },
-          "as": ["Entity","AvgTemp"]
+          "as": ["Entity", "AvgTemp"]
         }
       ],
-      "mark": {"type": "geoshape", "stroke": "white"},
+      "mark": { "type": "geoshape", "stroke": "white", "strokeWidth": 0.5 },
       "encoding": {
         "color": {
           "field": "AvgTemp",
           "type": "quantitative",
-          "scale": {"scheme": "reds"},
-          "title": "Average Temp (°C)"
+          "scale": { "scheme": "reds" },
+          "title": "Avg Temp (°C)"
         },
         "tooltip": [
-          {"field": "Entity", "title": "Country"},
-          {"field": "AvgTemp", "title": "Avg Temp (2020 °C)", "format": ".2f"}
+          { "field": "properties.NAME", "type": "nominal", "title": "Topo Name" },
+          { "field": "Entity", "type": "nominal", "title": "Country" },
+          { "field": "AvgTemp", "type": "quantitative", "title": "Avg Temp (2020 °C)", "format": ".2f" }
         ]
       }
     };
 
-    vegaEmbed('#vis', spec);
+    vegaEmbed('#vis', spec, { actions: false }).then(result => {
+      // result.view.run(); // optional
+    }).catch(err => {
+      document.getElementById('vis').innerHTML = '<p style="color:red">Failed to render visualization — open your browser console (F12) for error details.</p>';
+      console.error(err);
+    });
   </script>
 </body>
 </html>

@@ -1,0 +1,38 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 900,
+  "height": 520,
+  "projection": { "type": "equalEarth" },
+  "data": {
+    "url": "https://raw.githubusercontent.com/FIT3179/Vega-Lite/main/3_choropleth_map/js/ne_110m_admin_0_countries.topojson",
+    "format": { "type": "topojson", "feature": "ne_110m_admin_0_countries" }
+  },
+  "transform": [
+    {
+      "lookup": "properties.ISO_A3",
+      "from": {
+        "data": {
+          "url": "https://raw.githubusercontent.com/TasmimAfsah/fit3179-week9-hw/main/temps_2020_clean.csv",
+          "format": { "type": "csv" }
+        },
+        "key": "Code",
+        "fields": ["Entity", "AvgTemp"]
+      },
+      "as": ["Entity", "AvgTemp"]
+    }
+  ],
+  "mark": { "type": "geoshape", "stroke": "white", "strokeWidth": 0.5 },
+  "encoding": {
+    "color": {
+      "field": "AvgTemp",
+      "type": "quantitative",
+      "scale": { "scheme": "reds" },
+      "title": "Avg Temp (°C)"
+    },
+    "tooltip": [
+      { "field": "properties.NAME", "type": "nominal", "title": "Topo Name" },
+      { "field": "Entity", "type": "nominal", "title": "Country" },
+      { "field": "AvgTemp", "type": "quantitative", "title": "Avg Temp (2020 °C)", "format": ".2f" }
+    ]
+  }
+}
